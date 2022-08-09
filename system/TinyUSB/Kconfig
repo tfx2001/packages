@@ -29,38 +29,6 @@ if PKG_USING_TINYUSB
         int "Memory align size"
         default 4
 
-    choice
-        prompt "Port number"
-        default PKG_TINYUSB_RHPORT_NUM_1
-
-        config PKG_TINYUSB_RHPORT_NUM_1
-            bool "1"
-
-        config PKG_TINYUSB_RHPORT_NUM_2
-            bool "2"
-    endchoice
-
-    config PKG_TINYUSB_RHPORT_NUM
-        int
-        default 0 if PKG_TINYUSB_RHPORT_NUM_1
-        default 1 if PKG_TINYUSB_RHPORT_NUM_2
-
-    choice
-        prompt "Port speed"
-        default PKG_TINYUSB_FULL_SPEED
-
-        config PKG_TINYUSB_FULL_SPEED
-            bool "Full Speed"
-
-        config PKG_TINYUSB_HIGH_SPEED
-            bool "High Speed"
-    endchoice
-
-    config PKG_TINYUSB_DEVICE_PORT_SPEED
-        hex
-        default 0x00 if PKG_TINYUSB_FULL_SPEED
-        default 0x20 if PKG_TINYUSB_HIGH_SPEED
-
     menuconfig PKG_TINYUSB_DEVICE_ENABLE
         bool "Using USB device"
         default n
@@ -81,6 +49,38 @@ if PKG_USING_TINYUSB
         config PKG_TINYUSB_DEVICE_PRODUCT
             string "Device name"
             default "TinyUSB Device"
+        
+        choice
+            prompt "Device port number"
+            default PKG_TINYUSB_DEVICE_RHPORT_NUM_1
+
+            config PKG_TINYUSB_DEVICE_RHPORT_NUM_1
+                bool "0"
+
+            config PKG_TINYUSB_DEVICE_RHPORT_NUM_2
+                bool "1"
+        endchoice
+
+        config PKG_TINYUSB_DEVICE_RHPORT_NUM
+            int
+            default 0 if PKG_TINYUSB_DEVICE_RHPORT_NUM_1
+            default 1 if PKG_TINYUSB_DEVICE_RHPORT_NUM_2
+        
+        choice
+            prompt "Port speed"
+            default PKG_TINYUSB_DEVICE_FULL_SPEED
+
+            config PKG_TINYUSB_DEVICE_FULL_SPEED
+                bool "Full Speed"
+
+            config PKG_TINYUSB_DEVICE_HIGH_SPEED
+                bool "High Speed"
+        endchoice
+
+        config PKG_TINYUSB_DEVICE_PORT_SPEED
+            hex
+            default 0x00 if PKG_TINYUSB_DEVICE_FULL_SPEED
+            default 0x20 if PKG_TINYUSB_DEVICE_HIGH_SPEED
 
         config PKG_TINYUSB_EDPT0_SIZE
             int "Endpoint 0 size"
@@ -216,6 +216,66 @@ if PKG_USING_TINYUSB
                 select PKG_TINYUSB_DEVICE_HID
                 select PKG_TINYUSB_DEVICE_HID_KEYBOARD
                 select PKG_TINYUSB_DEVICE_HID_MOUSE
+        endif
+    endif
+
+    menuconfig PKG_TINYUSB_HOST_ENABLE
+        bool "Using USB host"
+        default n
+    
+    if PKG_TINYUSB_HOST_ENABLE
+        choice
+            prompt "Host port number"
+            default PKG_TINYUSB_HOST_RHPORT_NUM_1
+
+            config PKG_TINYUSB_HOST_RHPORT_NUM_1
+                bool "0"
+
+            config PKG_TINYUSB_HOST_RHPORT_NUM_2
+                bool "1"
+        endchoice
+
+        config PKG_TINYUSB_HOST_RHPORT_NUM
+            int
+            default 0 if PKG_TINYUSB_HOST_RHPORT_NUM_1
+            default 1 if PKG_TINYUSB_HOST_RHPORT_NUM_2
+        
+        choice
+            prompt "Port speed"
+            default PKG_TINYUSB_HOST_FULL_SPEED
+
+            config PKG_TINYUSB_HOST_FULL_SPEED
+                bool "Full Speed"
+
+            config PKG_TINYUSB_HOST_HIGH_SPEED
+                bool "High Speed"
+        endchoice
+
+        config PKG_TINYUSB_HOST_PORT_SPEED
+            hex
+            default 0x00 if PKG_TINYUSB_HOST_FULL_SPEED
+            default 0x20 if PKG_TINYUSB_HOST_HIGH_SPEED
+        
+        config PKG_TINYUSB_HOST_ENUM_BUFSIZE
+            int "Enumeration buffer size"
+            default 256
+        
+        menuconfig PKG_TINYUSB_HOST_MSC
+            bool "Using Mass Storage Class (MSC)"
+            default n
+        
+        if PKG_TINYUSB_HOST_MSC
+            config CFG_TUH_MSC
+                int
+                default 1
+            
+            config PKG_TINYUSB_HOST_MSC_BUFSIZE
+                int "Sector buffer size"
+                default 4096
+
+            config PKG_TINYUSB_HOST_MSC_SCSI_TIMEOUT
+                int "SCSI command timeout (ms)"
+                default 100
         endif
     endif
 
